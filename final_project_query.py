@@ -1,6 +1,6 @@
-from datetime import timedelta, date
+from datetime import timedelta, datetime, timezone
 
-date_yesterday = date.today() - timedelta(days = 1)
+yesterday = str(datetime.now(timezone.utc) - timedelta(days=1)).split()[0]
 
 create_db_staging = """
 CREATE DATABASE IF NOT EXISTS staging;
@@ -24,13 +24,18 @@ num_baths DOUBLE,
 state STRING,
 county STRING,
 city STRING,
-postal_code STRING
+postal_code STRING,
+stories DOUBLE,
+beds DOUBLE,
+garage DOUBLE,
+type STRING,
+name STRING
 )
 STORED AS PARQUET LOCATION '/user/fadlil/staging' 
 tblproperties ("skip.header.line.count"="1");
 """
 
 insert_table_property = f"""
-LOAD DATA LOCAL INPATH '/home/fadlil/property/{str(date_yesterday)}.parquet'
+LOAD DATA LOCAL INPATH '/home/fadlil/property/{str(yesterday)}.parquet'
 INTO TABLE staging.property;
 """
