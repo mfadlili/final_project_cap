@@ -60,7 +60,7 @@ def get_data(url, headers, state_city):
                     dict_tampung['status'] = data['status']
 
                     try:
-                        dict_tampung['broker'] = data['products']['brand_name']
+                        dict_tampung['broker'] = data['branding'][0]['name']
                     except:
                         dict_tampung['broker'] = None
                     
@@ -130,10 +130,6 @@ def get_data(url, headers, state_city):
                         dict_tampung['name'] = None
 
                     tampung.append(dict_tampung)
-                    with open(linux_path+yesterday+'.csv', 'a', newline='') as output_file:
-                        dict_writer = csv.DictWriter(output_file, dict_tampung.keys())
-                        dict_writer.writeheader()
-                        dict_writer.writerow(dict_tampung)
             except:
                 pass
     df = pd.DataFrame(tampung)
