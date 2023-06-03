@@ -30,22 +30,25 @@ df = df.withColumn("list_date", regexp_replace(col("list_date"), "Z", ""))
 df = df.withColumn("date", split(df["list_date"], " ")[0])
 df = df.withColumn("timestamp", split(df["list_date"], " ")[1])
 # df = df.withColumn("list_date", date_format("list_date", "dd/MM/yyyy HH:mm:ss"))
+#df.show(5)
 
 #Dimension Broker Transformation
 windowSpec = Window.orderBy("broker")
-df_dim_broker = spark.sql("SELECT * FROM dwh.dim_broker")
+df_dim_broker = spark.table("dwh.dim_broker")
 new_data_broker = df.selectExpr('broker').distinct().dropna()
 filtered_new_data_broker = new_data_broker.exceptAll(df_dim_broker.select(['broker']))
 filtered_new_data_broker = filtered_new_data_broker.withColumn("sk_broker", row_number().over(windowSpec)+df_dim_broker.count())
-combined_df_dim_broker = df_dim_broker.union(filtered_new_data_broker.select(['sk_broker','broker']))
-append_df_dim_broker = combined_df_dim_broker.exceptAll(df_dim_broker)
+# combined_df_dim_broker = df_dim_broker.union(filtered_new_data_broker.select(['sk_broker','broker']))
+# append_df_dim_broker = combined_df_dim_broker.exceptAll(df_dim_broker)
+
+filtered_new_data_broker.select(['sk_broker','broker']).orderBy('sk_broker').createOrReplaceTempView('filtered_new_dim_broker')
+spark.sql("INSERT INTO dwh.dim_broker SELECT * FROM filtered_new_dim_broker")
+
+# data = [("John", 25), ("Jane", 30), ("Mike", 35)]
+# df_data = spark.createDataFrame(data, ["name", "age"])
+# df_data.createOrReplaceTempView('coba_data')
+# spark.sql("INSERT INTO dwh.coba SELECT * FROM coba_data")
+
 # filtered_new_data_broker.show(5)
 # combined_df_dim_broker.show(5)
 # append_df_dim_broker.orderBy('sk_broker').show(5)
-# append_df_dim_broker.orderBy('sk_broker').createOrReplaceTempView('filtered_new_dim_broker')
-# spark.sql("INSERT INTO dwh.dim_broker SELECT * FROM filtered_new_dim_broker")
-
-data = [("John", 25), ("Jane", 30), ("Mike", 35)]
-df_data = spark.createDataFrame(data, ["name", "age"])
-df_data.createOrReplaceTempView('coba_data')
-spark.sql("INSERT INTO dwh.coba SELECT * FROM coba_data")
