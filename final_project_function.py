@@ -9,7 +9,7 @@ url = ["https://us-real-estate.p.rapidapi.com/v2/for-sale", "https://us-real-est
 
 state_city = {"state": ["NY", "CA", "TX", "FL", "PA", "CA"], "city": ["New York", "Los Angeles", "Houston", "Miami", "Philadelphia", "San Diego"]}
 headers = {
-	"X-RapidAPI-Key": "faba5e419fmsh917e601da36696bp1b8db8jsne00390dae173",
+	"X-RapidAPI-Key": "",
 	"X-RapidAPI-Host": "us-real-estate.p.rapidapi.com"
 }
 
