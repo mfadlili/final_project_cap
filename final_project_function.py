@@ -19,7 +19,7 @@ def get_data(url, headers, state_city):
         for i in range(len(state_city["state"])):
             params = {"offset":"0","limit":"200","state_code":state_city["state"][i], "city":state_city["city"][i],"sort":"newest"}
             response = requests.get(link, headers=headers, params=params)
-            if response.status_code == 200:
+            if response.json()['status'] == 200:
                 result.append(response.json())
     
     tampung = []

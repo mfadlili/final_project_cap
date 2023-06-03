@@ -45,4 +45,7 @@ with DAG(dag_id = 'dag_final_project',
         hive_cli_conn_id = 'hiveserver2_default'
     )
 
-get_data_task >> create_database_staging_task >> create_table_property_task >> insert_table_property_task
+    transformation_task = BashOperator(task_id='transformation',
+                                bash_command = "/home/fadlil/spark/bin/spark-submit --master local /mnt/c/Users/user/Documents/airflow/dags/final_project_transformation.py")
+
+get_data_task >> create_database_staging_task >> create_table_property_task >> insert_table_property_task >> transformation_task
