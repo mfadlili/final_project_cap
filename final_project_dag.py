@@ -47,5 +47,8 @@ with DAG(dag_id = 'dag_final_project',
 
     transformation_task = BashOperator(task_id='transformation',
                                 bash_command = "/home/fadlil/spark/bin/spark-submit --master local /mnt/c/Users/user/Documents/airflow/dags/final_project_transformation.py")
+    
+    load_to_solr_task = BashOperator(task_id='load_to_solr',
+                                bash_command = "python3 /mnt/c/Users/user/Documents/airflow/dags/final_project_solr.py")
 
-get_data_task >> create_database_staging_task >> create_table_property_task >> insert_table_property_task >> transformation_task
+get_data_task >> create_database_staging_task >> create_table_property_task >> insert_table_property_task >> transformation_task >> load_to_solr_task 
